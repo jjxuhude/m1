@@ -76,7 +76,6 @@ class HN_Followupemail_Model_Rule_Condition_Customer extends HN_Followupemail_Mo
                         
                     $mail_content = Mage::getModel('followupemail/mail')->preCoupon($mail_content, $rule);
 					
-					$customer->setPassword('111111');
                     $emailTemplateVariables = array (
                             'customer' => $customer
                     );
