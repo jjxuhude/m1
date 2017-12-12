@@ -175,7 +175,7 @@ class HN_Followupemail_Adminhtml_RuleController extends Mage_Adminhtml_Controlle
                 $chain['day'] =0;
             }
 
-            if ($chain['time'] !=''  && $chain['hour'] && $chain['min'] && $chain['template']) {
+            if ($chain['time'] !=''  && $chain['hour']>=0 && $chain['min']>=0 && $chain['template']) {
                 $rule_data['chain']  .=$chain['time'] .';' .$chain['day'] . ';' . $chain['hour'] .';'.
                                    $chain['min'] .';' .$chain['template'].':';
             }
@@ -244,7 +244,7 @@ class HN_Followupemail_Adminhtml_RuleController extends Mage_Adminhtml_Controlle
                 $chain['day'] = 0;
             }
 
-            if ($chain['time'] !=''  && $chain['hour'] && $chain['min'] && $chain['template']) {
+            if ($chain['time'] !=''  && $chain['hour']>=0 && $chain['min']>=0 && $chain['template']) {
                 $rule_data['chain']  .=$chain['time'] .';' .$chain['day'] . ';' . $chain['hour'] .';'.
                 $chain['min'] .';' .$chain['template'].':';
             }

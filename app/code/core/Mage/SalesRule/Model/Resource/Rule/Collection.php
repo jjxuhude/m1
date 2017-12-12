@@ -114,6 +114,9 @@ class Mage_SalesRule_Model_Resource_Rule_Collection extends Mage_Rule_Model_Reso
                         '(main_table.coupon_type = ? AND main_table.use_auto_generation = 0 AND rule_coupons.type = 0)',
                         Mage_SalesRule_Model_Rule::COUPON_TYPE_SPECIFIC
                     ),
+                	$connection->quoteInto(
+                		'(main_table.coupon_type = 4 AND main_table.use_auto_generation = 0 AND rule_coupons.is_fue = 1)'
+                	)
                 );
                 $orWhereCondition = implode(' OR ', $orWhereConditions);
                 $select->where(

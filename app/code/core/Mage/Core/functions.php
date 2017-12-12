@@ -410,3 +410,13 @@ if (!function_exists('hash_equals')) {
         return 0 === $result;
     }
 }
+
+
+function dump($var){
+	Zend_Debug::dump($var);
+}
+
+function dumpd($var){
+	dump($var);
+	exit();
+}
