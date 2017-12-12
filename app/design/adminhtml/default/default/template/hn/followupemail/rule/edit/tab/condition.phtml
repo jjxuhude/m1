@@ -134,7 +134,7 @@ foreach ($events as $event) {
                                 <td><select  class="hour-chain" name="chain[<?php echo $key ?>][hour]">
                                                                         <?php $selected = '' ;?>
                                     
-                                    <?php $i=0;
+                                    <?php $i=-1;
                                     while ($i < 23) {
                                         $i = $i + 1; ?>
                                     <option value="<?php echo $i?>"
@@ -149,7 +149,7 @@ foreach ($events as $event) {
                                     </select></td>
 
                                 <td><select class="minute-chain" name="chain[<?php echo $key ?>][min]">
-                                    <?php  $i=0;
+                                    <?php  $i=-5;
                                     while ($i < 55) {
                                         $i = $i + 5; ?>
                                                                         <?php $selected = '' ;?>
@@ -206,7 +206,7 @@ foreach ($events as $event) {
                                 <td><input class="day-chain" name="chain[1000][day]" type="text" /></td>
 
                                 <td><select class="hour-chain" name="chain[1000][hour]">
-                                    <?php $i=0;
+                                    <?php $i=-1;
                                     while ($i < 23) {
                                         $i = $i + 1; ?>
                                     <option value="<?php echo $i?>"> <?php echo $i ?> </option>
@@ -214,7 +214,7 @@ foreach ($events as $event) {
                                     </select></td>
 
                                 <td><select class="minute-chain" name="chain[1000][min]">
-                                    <?php  $i=0;
+                                    <?php  $i=-5;
                                     while ($i < 55) {
                                         $i = $i + 5; ?>
                                     <option value="<?php echo $i?>"> <?php echo $i ?> </option>
