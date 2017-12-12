@@ -1,0 +1,459 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+	<modules>
+		<HN_Followupemail>
+			<version>1.2.0</version>
+		</HN_Followupemail>
+	</modules>
+
+	<global>
+
+		<blocks>
+			<followupemail>
+				<class>HN_Followupemail_Block</class>
+			</followupemail>
+		</blocks>
+		<helpers>
+			<followupemail>
+				<class>HN_Followupemail_Helper</class>
+			</followupemail>
+		</helpers>
+
+		<models>
+			<followupemail>
+				<class>HN_Followupemail_Model</class>
+				<resourceModel>followupemail_mysql4</resourceModel>
+			</followupemail>
+			<followupemail_mysql4>
+				<class>HN_Followupemail_Model_Mysql4</class>
+				<entities>
+					<rule>
+						<table>hn_followupemail_rule</table>
+					</rule>
+					<mail>
+						<table>hn_followupemail_mail</table>
+					</mail>
+					<track>
+						<table>hn_followupemail_track</table>
+					</track>
+					<followupemail>
+						<table>hn_event_followupemail</table>
+					</followupemail>
+				</entities>
+			</followupemail_mysql4>
+		</models>
+
+		<resources>
+			<followupemail_setup>
+				<setup>
+					<module>HN_Followupemail</module>
+				</setup>
+				<connection>
+					<use>core_setup</use>
+				</connection>
+			</followupemail_setup>
+			<followupemail_write>
+				<connection>
+					<use>core_write</use>
+				</connection>
+			</followupemail_write>
+			<followupemail_read>
+				<connection>
+					<use>core_read</use>
+				</connection>
+			</followupemail_read>
+		</resources>
+
+		<template>
+			<email>
+				<fue>
+					<label>Ticket information</label>
+					<file>fue.html</file>
+					<type>html</type>
+				</fue>
+			</email>
+		</template>
+		<events>
+			<salesrule_rule_get_coupon_types>
+				<observers>
+					<followupemail_observer>
+						<type>singleton</type>
+						<class>followupemail/observer</class>
+						<method>addCouponType</method>
+					</followupemail_observer>
+				</observers>
+			</salesrule_rule_get_coupon_types>
+
+			<sales_order_save_commit_after>
+				<observers>
+					<followupemail_observer>
+						<type>singleton</type>
+						<class>followupemail/rule_condition_order</class>
+						<method>orderCommitListener</method>
+					</followupemail_observer>
+				</observers>
+			</sales_order_save_commit_after>
+			<customer_register_success>
+				<observers>
+					<followupemail_observer>
+						<type>singleton</type>
+						<class>followupemail/rule_condition_customer</class>
+						<method>listener</method>
+					</followupemail_observer>
+				</observers>
+			</customer_register_success>
+			<newsletter_subscriber_save_commit_after>
+				<observers>
+					<followupemail_observer>
+						<type>singleton</type>
+						<class>followupemail/rule_condition_newsletter</class>
+						<method>newsletterSubscriberList</method>
+					</followupemail_observer>
+				</observers>
+			</newsletter_subscriber_save_commit_after>
+			<customer_login>
+				<observers>
+					<followupemail_observer>
+						<type>singleton</type>
+						<class>followupemail/rule_condition_customerlogin</class>
+						<method>listener</method>
+					</followupemail_observer>
+				</observers>
+			</customer_login>
+			<customer_logout>
+				<observers>
+					<followupemail_observer>
+						<type>singleton</type>
+						<class>followupemail/rule_condition_customerlogout</class>
+						<method>listener</method>
+					</followupemail_observer>
+				</observers>
+			</customer_logout>
+			<!-- <customer_save_after> -->
+			<!-- <followupemail_observer> -->
+			<!-- <class>followupemail/observer</class> -->
+			<!-- <method>customerSaveListener</method> -->
+			<!-- </followupemail_observer> -->
+			<!-- </customer_save_after> -->
+			<wishlist_share>
+				<observers>
+					<followupemail_observer>
+						<type>singleton</type>
+						<class>followupemail/rule_condition_wishlist</class>
+						<method>wishlistShareListener</method>
+					</followupemail_observer>
+				</observers>
+			</wishlist_share>
+			<wishlist_product_add_after>
+				<observers>
+					<followupemail_observer>
+						<type>singleton</type>
+						<class>followupemail/rule_condition_wishlistadditem</class>
+						<method>wishlistProductAddListener</method>
+					</followupemail_observer>
+				</observers>
+			</wishlist_product_add_after>
+
+            <catalog_product_save_after>
+                <observers>
+                    <followupemail_observer>
+                        <type>singleton</type>
+                        <class>followupemail/rule_condition_wishlist_item_discount</class>
+                        <method>afterProductSave</method>
+                    </followupemail_observer>
+                </observers>
+            </catalog_product_save_after>
+
+            <!--<salesrule_rule_save_after>-->
+                <!--<observers>-->
+                    <!--<followupemail_observer>-->
+                        <!--<type>singleton</type>-->
+                        <!--<class>followupemail/rule_condition_wishlist_item_discount</class>-->
+                        <!--<method>afterRuleSave</method>-->
+                    <!--</followupemail_observer>-->
+                <!--</observers>-->
+            <!--</salesrule_rule_save_after>-->
+		</events>
+	</global>
+
+
+	<frontend>
+
+        <routers>
+            <followupemail>
+                <use>standard</use>
+                <args>
+                    <module>HN_Followupemail</module>
+                    <frontName>followupemail</frontName>
+                </args>
+            </followupemail>
+        </routers>
+		<layout>
+			<updates>
+				<followupemail>
+					<file>hn_followupemail.xml</file>
+				</followupemail>
+			</updates>
+		</layout>
+	</frontend>
+
+	<admin>
+        <routers>
+            <followupemail>
+                <use>admin</use>
+                <args>
+                    <module>HN_Followupemail</module>
+                    <frontName>followupemail</frontName>
+                </args>
+            </followupemail>
+        </routers>
+
+	</admin>
+	<adminhtml>
+		<menu>
+			<followupemail translate="title" module="followupemail">
+				<title>Follow Up Email</title>
+				<sort_order>130</sort_order>
+				<children>
+					<rule translate="title" module="followupemail">
+						<title>Manage Rules</title>
+						<action>followupemail/adminhtml_rule/index</action>
+					</rule>
+					<mail_log translate="title" module="followupemail">
+						<title>Mail Log</title>
+						<action>followupemail/adminhtml_mail/index</action>
+					</mail_log>
+                  <!--  <abandoned_cart translate="title" module="followupemail">
+                        <title>Abandoned Cart List</title>
+                        <action>followupemail/adminhtml_cart/index</action>
+                    </abandoned_cart>-->
+					<link_tack translate="title" module="followupemail">
+						<title>Link tracking</title>
+						<action>followupemail/adminhtml_track/index</action>
+					</link_tack>
+					<coupon translate="title" module="followupemail">
+						<title>Coupon</title>
+						<action>followupemail/adminhtml_coupon/index</action>
+					</coupon>
+                    <collect_ac translate="title" module="followupemail">
+                        <title>Manual Collect Abandoned Cart</title>
+                        <action>followupemail/adminhtml_emulate/collect</action>
+                    </collect_ac>
+                    <send_fue translate="title" module="followupemail">
+                        <title>Manual Send Follow Up Emails</title>
+                        <action>followupemail/adminhtml_emulate/send</action>
+                    </send_fue>
+                    <send_fue translate="title" module="followupemail">
+                        <title>Manual Send Birthday Emails</title>
+                        <action>followupemail/adminhtml_emulate/sendFUEBirthday</action>
+                    </send_fue>
+
+
+				</children>
+			</followupemail>
+		</menu>
+		<layout>
+			<updates>
+				<followupemail>
+					<file>hn_followupemail.xml</file>
+				</followupemail>
+			</updates>
+		</layout>
+
+		<acl>
+			<resources>
+				<all>
+					<title>Allow Everything</title>
+				</all>
+				<admin>
+					<children>
+						<system>
+							<children>
+								<config>
+									<children>
+										<followupemail translate="title" module="followupemail">
+											<title>Follow up Email Settings</title>
+										</followupemail>
+									</children>
+								</config>
+							</children>
+						</system>
+						<followupemail translate="title" module="followupemail">
+				<title>Follow Up Email</title>
+				<sort_order>130</sort_order>
+				<children>
+					<rule translate="title" module="followupemail">
+						<title>Manage Rules</title>
+						<action>followupemail/adminhtml_rule/index</action>
+					</rule>
+					<mail_log translate="title" module="followupemail">
+						<title>Mail Log</title>
+						<action>followupemail/adminhtml_mail/index</action>
+					</mail_log>
+					<link_tack translate="title" module="followupemail">
+						<title>Link tracking</title>
+						<action>followupemail/adminhtml_track/index</action>
+					</link_tack>
+                    <abandoned_cart translate="title" module="followupemail">
+                        <title>Abandoned Cart List</title>
+                        <action>followupemail/adminhtml_cart/index</action>
+                    </abandoned_cart>
+					<coupon translate="title" module="followupemail">
+						<title>Coupon</title>
+						<action>followupemail/adminhtml_coupon/index</action>
+					</coupon>
+
+                    <collect_ac translate="title" module="followupemail">
+						<title>Manual Collect Abandoned Cart</title>
+						<action>followupemail/adminhtml_emulate/collect</action>
+					</collect_ac>
+                    <send_fue translate="title" module="followupemail">
+						<title>Manual Send Follow Up Emails</title>
+						<action>followupemail/adminhtml_emulate/send</action>
+					</send_fue>
+
+				</children>
+			</followupemail>
+					</children>
+
+
+				</admin>
+				
+				<followupemail translate="title" module="followupemail">
+				<title>Follow Up Email</title>
+				<sort_order>130</sort_order>
+				<children>
+					<rule translate="title" module="followupemail">
+						<title>Manage Rules</title>
+						<action>followupemail/adminhtml_rule/index</action>
+					</rule>
+					<mail_log translate="title" module="followupemail">
+						<title>Mail Log</title>
+						<action>followupemail/adminhtml_mail/index</action>
+					</mail_log>
+					<link_tack translate="title" module="followupemail">
+						<title>Link tracking</title>
+						<action>followupemail/adminhtml_track/index</action>
+					</link_tack>
+                    <abandoned_cart translate="title" module="followupemail">
+                        <title>Abandoned Cart List</title>
+                        <action>followupemail/adminhtml_cart/index</action>
+                    </abandoned_cart>
+					<coupon translate="title" module="followupemail">
+						<title>Coupon</title>
+						<action>followupemail/adminhtml_coupon/index</action>
+					</coupon>
+                    <collect_ac translate="title" module="followupemail">
+                        <title>Manual Collect Abandoned Cart</title>
+                        <action>followupemail/adminhtml_emulate/collect</action>
+                    </collect_ac>
+                    <send_fue translate="title" module="followupemail">
+                        <title>Manual Send Follow Up Emails</title>
+                        <action>followupemail/adminhtml_emulate/send</action>
+                    </send_fue>
+
+				</children>
+			</followupemail>
+			</resources>
+		</acl>
+	</adminhtml>
+	<default>
+		<followupemailevent>
+			<order>
+				<model>followupemail/rule_condition_order</model>
+				<active>1</active>
+			</order>
+			<customer_register>
+				<model>followupemail/rule_condition_customer</model>
+				<active>1</active>
+			</customer_register>
+			<customer_groupchange>
+				<model>followupemail/rule_condition_customergroupchange</model>
+				<active>1</active>
+			</customer_groupchange>
+			<customer_login>
+				<model>followupemail/rule_condition_customerlogin</model>
+				<active>1</active>
+			</customer_login>
+			<customerlogout>
+				<model>followupemail/rule_condition_customerlogout</model>
+				<active>1</active>
+			</customerlogout>
+			<newsletter_signup>
+				<model>followupemail/rule_condition_newsletter</model>
+				<active>1</active>
+			</newsletter_signup>
+			<wishlist_share>
+				<model>followupemail/rule_condition_wishlist</model>
+				<active>1</active>
+			</wishlist_share>
+			<wishlist_item_add>
+				<model>followupemail/rule_condition_wishlistadditem</model>
+				<active>1</active>
+			</wishlist_item_add>
+
+            <wishlist_item_discount>
+				<model>followupemail/rule_condition_wishlist_item_discount</model>
+				<active>1</active>
+			</wishlist_item_discount>
+			<abandoned_cart>
+			    <model>followupemail/rule_condition_abandonedcart</model>
+			    <active>1</active>
+			</abandoned_cart>
+			<customer_birthday>
+			    <model>followupemail/rule_condition_birthday</model>
+			    <active>1</active>
+			    
+			</customer_birthday>
+		</followupemailevent>
+		<followupemail>
+			<general>
+				<change_status>1</change_status>
+				<email_sender>sales</email_sender>
+				<qty_sync>1</qty_sync>
+				<delivery_confirmed>0</delivery_confirmed>
+				<low_stock_notification>1</low_stock_notification>
+				<low_stock_number>10</low_stock_number>
+				<show_followupemail_successpage>1</show_followupemail_successpage>
+			</general>
+		</followupemail>
+
+	</default>
+	<crontab>
+		<jobs>
+			<seding_queue_followupemail>
+				<schedule>
+					<cron_expr>*/5 * * * *</cron_expr>
+				</schedule>
+				<run>
+					<model>followupemail/observer::scheduledSend</model>
+				</run>
+			</seding_queue_followupemail>
+		</jobs>
+		
+		<jobs>
+		    <collect_abandoned_cart>
+		        <schedule>
+		         	<cron_expr>*/5 * * * *</cron_expr>
+		        </schedule>
+		        <run>
+		            <model>followupemail/rule_condition_abandonedcart::scheduleCollectAbandonedCart</model>
+		        </run>
+		        
+		    </collect_abandoned_cart>
+		</jobs>
+        <jobs>
+		    <collect_birthday_email>
+		        <schedule>
+		         	<cron_expr>*/5 * * * *</cron_expr>
+		        </schedule>
+		        <run>
+		            <model>followupemail/rule_condition_birthday::cron</model>
+		        </run>
+
+		    </collect_birthday_email>
+		</jobs>
+	</crontab>
+
+</config>

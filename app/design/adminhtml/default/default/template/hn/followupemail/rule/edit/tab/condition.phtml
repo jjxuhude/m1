@@ -1,0 +1,331 @@
+<style>
+.before-after-chain {width: 80px !important}
+.day-chain {width: 40px}
+.hour-chain {width:50px}
+.minute-chain {width:50px}
+.template-chain {{width:200px} 
+</style>
+<?php
+$events = Mage::helper('followupemail/config')->getActiveEvents();
+
+foreach ($events as $event) {
+    $option [] = array (
+            'label' => $event->getName(),
+            'value' => $event->getCode()
+    );
+}
+
+$form = new Varien_Data_Form(
+    array (
+        'id' => 'edit_form',
+        'action' => $this->getUrl(
+            '*/*/save', array (
+                'id' => $this->getRequest()->getParam('id')
+            )
+        ),
+        'method' => 'post',
+        'enctype' => 'multipart/form-data'
+    )
+);
+
+$eventElement = new Varien_Data_Form_Element_Select(
+    array (
+        'label' => Mage::helper('followupemail')->__('Event'),
+        'class' => 'required-entry',
+        'required' => true,
+        'id' => 'fue_event',
+        'name' => 'event',
+        'onchange' => 'fueControl.reloadCondition(event)',
+        'values' => $option
+    )
+);
+$eventElement->setId('fue_event');
+$eventElement->setForm($form);
+$emailChainsCollection = false;
+$ruleId = $this->getRequest()->getParam('id');
+if ($ruleId) {
+    $ruleBean = Mage::getModel('followupemail/rule')->load($ruleId);
+    $emailChainsCollection = $ruleBean->getEmailChain();
+}
+?>
+<div class="entry-edit">
+    <div class="entry-edit-head">
+        <h4 class="icon-head head-edit-form fieldset-legend"><?php echo $this->__('Condition to send mail') ?></h4>
+    </div>
+    <fieldset>
+        <legend><?php echo $this->__('Event Booking') ?></legend>
+        <table cellspacing="0" class="form-list" id="table_catalogticket">
+            <tr>
+                <td class="label"><label for="enable_ticket"><?php echo $this->__('When') ?></label></td>
+                <td class="value">
+            <?php	echo $eventElement->getElementHtml(); ?>
+            <input type="hidden" id="load_event_value" value="0" />
+                </td>
+                <td></td>
+            </tr>
+<?php
+
+// ////////LOOP through childs
+foreach ($events as $event) {
+    $block_type = $event->getTemplateForAdditionElement();
+    $block = $this->getLayout()->createBlock($block_type, 'order.conditional');
+    echo $block->renderView();
+}
+
+?>
+
+<!-- Email chain -->
+            <!-- Email chain -->
+            <tr>
+                <td class="label"><label><?php echo  Mage::helper('followupemail')->__('Email chain') ?></label>
+                </td>
+                <td class="grid tier" colspan="10">
+                    <table cellspacing="0" id="email_chain_table" class="data border">
+                        <colgroup>
+                            <col width="20">
+                            <col width="20">
+                            <col width="20">
+                            <col width="20">
+                            <col width="120">
+                            <col width="1">
+                        </colgroup>
+                        <thead>
+                            <tr class="headings">
+                                <th><?php echo $this->__('Send') ?></th>
+                                <th><?php echo $this->__('Day') ?></th>
+                                <th><?php echo $this->__('Hours') ?></th>
+                                <th><?php echo $this->__('Mins') ?></th>
+                                <th><?php echo $this->__('Template') ?></th>
+                                <th class="last"><?php echo $this->__('Action') ?></th>
+                            </tr>
+                        </thead>
+                        <tbody id="chain_container">
+                        <?php
+                        
+                        if ($emailChainsCollection) :
+                            foreach ($emailChainsCollection as $key => $email) {
+                                $selected = '';
+                                ?>
+                         <tr id="<?php echo $key ?>">
+                                <td><select class="before-after-chain" id="" name="chain[<?php echo $key ?>][time]"
+                                    class=" input-text ">
+                                    <?php $selected = '' ;?>
+                                    <option value="0"
+                                            <?php $value= 0;
+                                            if ($email->getData('time') ==$value) {
+                                                $selected = 'selected';
+                                            } else {
+                                                $selected = '';
+                                            } ?>
+                                            <?php echo $selected ?>><?php echo $this->__('After') ?></option>
+                                        <option value="1"
+                                            <?php $value= 1;
+                                            if ($email->getData('time') ==$value) {
+                                                $selected = 'selected';
+                                            } else {
+                                                $selected = '';
+                                            }?>
+                                            <?php echo $selected ?>><?php echo $this->__('Before') ?></option>
+
+                                </select></td>
+                                <td><input class="day-chain" name="chain[<?php echo $key ?>][day]" type="text"
+                                    value="<?php echo $email->getData('day') ?>" /></td>
+
+                                <td><select  class="hour-chain" name="chain[<?php echo $key ?>][hour]">
+                                                                        <?php $selected = '' ;?>
+                                    
+                                    <?php $i=0;
+                                    while ($i < 23) {
+                                        $i = $i + 1; ?>
+                                    <option value="<?php echo $i?>"
+                                            <?php $value= $i;
+                                            if ($email->getData('hour') ==$value) {
+                                                $selected = 'selected';
+                                            } else {
+                                                $selected = '';
+                                            } ?>
+                                            <?php echo $selected ?>> <?php echo $i ?> </option>
+                                    <?php                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     } ?>
+                                    </select></td>
+
+                                <td><select class="minute-chain" name="chain[<?php echo $key ?>][min]">
+                                    <?php  $i=0;
+                                    while ($i < 55) {
+                                        $i = $i + 5; ?>
+                                                                        <?php $selected = '' ;?>
+                                    
+                                    <option value="<?php echo $i?>"
+                                            <?php $value= $i;
+                                            if ($email->getData('min') ==$value) {
+                                                $selected = 'selected';
+                                            } else {
+                                                $selected = '';
+                                            } ?>
+                                            <?php echo $selected ?>> <?php echo $i ?> </option>
+                                    <?php                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     } ?>
+                                    </select></td>
+                                <td><select class="template-chain" name="chain[<?php echo $key ?>][template]">
+                                                                        <?php $selected = '' ;?>
+                                    
+                                    <?php
+                                
+                                    $trans_source = new Mage_Adminhtml_Model_System_Config_Source_Email_Template();
+                                    $option = $trans_source->toOptionArray();
+                                
+                                    foreach ($option as $op) {
+                                        ?>
+                                        <option value="<?php echo $op['value' ]?>"
+                                            <?php $value= $op['value' ] ;
+                                            if ($email->getData('template') ==$value) {
+                                                $selected = 'selected';
+                                            } else {
+                                                $selected = '';
+                                            } ?>
+                                            <?php echo $selected ?>> <?php echo $op['label'] ?> </option>
+                                    <?php                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         }  ?>
+                                    </select></td>
+
+                                <td class="last"><input type="hidden"
+                                    id="group_price_row_0_delete" value="" class="delete"
+                                    name="product[group_price][0][delete]">
+                                    <button onclick="return emailChainControl.deleteRow(event);"
+                                        id="group_price_row_0_delete_button"
+                                        class="scalable delete icon-btn delete-product-option"
+                                        type="button" title="Delete Group Price">
+                                        <span><?php echo $this->__('Delete') ?></span>
+                                    </button></td>
+                            </tr>
+                            <?php                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     }
+                        endif;?>
+                            <tr id="1000" style="display: none">
+                                <td><select class="before-after-chain" id="" name="chain[1000][time]" class=" input-text ">
+                                        <option value="0"><?php echo $this->__('After') ?></option>
+                                        <option value="1"><?php echo $this->__('Before') ?></option>
+
+                                </select></td>
+                                <td><input class="day-chain" name="chain[1000][day]" type="text" /></td>
+
+                                <td><select class="hour-chain" name="chain[1000][hour]">
+                                    <?php $i=0;
+                                    while ($i < 23) {
+                                        $i = $i + 1; ?>
+                                    <option value="<?php echo $i?>"> <?php echo $i ?> </option>
+                                    <?php                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     } ?>
+                                    </select></td>
+
+                                <td><select class="minute-chain" name="chain[1000][min]">
+                                    <?php  $i=0;
+                                    while ($i < 55) {
+                                        $i = $i + 5; ?>
+                                    <option value="<?php echo $i?>"> <?php echo $i ?> </option>
+                                    <?php                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     } ?>
+                                    </select></td>
+                                <td><select class="template-chain" name="chain[1000][template]">
+                                    <?php
+                                    
+                                    $trans_source = new Mage_Adminhtml_Model_System_Config_Source_Email_Template();
+                                    $option = $trans_source->toOptionArray();
+                                    
+                                    foreach ($option as $op) {
+                                        ?>
+                                    <option value="<?php echo $op['value' ]?>"> <?php echo $op['label'] ?> </option>
+                                    <?php                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             }  ?>
+                                    </select></td>
+
+                                <td class="last"><input type="hidden"
+                                    id="group_price_row_0_delete" value="" class="delete"
+                                    name="product[group_price][0][delete]">
+                                    <button onclick="return emailChainControl.deleteRow(event);"
+                                        id="group_price_row_0_delete_button"
+                                        class="scalable delete icon-btn delete-product-option"
+                                        type="button" title="Delete Group Price">
+                                        <span><?php echo $this->__('Delete') ?></span>
+                                    </button></td>
+                            </tr>
+
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td></td>
+                                <td class="a-right" colspan="4"><button style=""
+                                        onclick="return emailChainControl.addRow()"
+                                        class="scalable add" type="button"
+                                        title="<?php echo $this->__('Add email') ?>"
+                                        id="id_616b255ceacd8a038282904336573518">
+                                        <span><span><span><?php echo $this->__('Add email') ?></span></span></span>
+                                    </button></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+            
+            </tr>
+            <!-- End email chain -->
+        </table>
+    </fieldset>
+</div>
+
+
+<script type="text/javascript">
+
+var emailChainControl = new tableFieldset('email_chain_table','chain_container','1000');
+<?php if ($ruleId) { ?>
+new PeriodicalExecuter(function(pe) {
+
+    if ($('fue_event') != null && $('load_event_value') !=null) {
+        if ($('load_event_value').getValue() ==0) {
+            $('fue_event').setValue('<?php echo $ruleBean->getEvent();?>');
+            fueControl.reloadCondition(event);
+            $('load_event_value').setValue(1);
+        }
+    }
+    
+    if ( $('load_event_value') !=null && $('load_event_value').getValue() == 1)
+    pe.stop();
+    },0.5);
+
+<?php } ?>
+
+//the category
+<?php
+if (isset($ruleBean)) {
+    $cats = explode(',', $ruleBean->getData('category_ids'));
+    $refineCats = array ();
+    if (! empty($cats)) {
+        foreach ($cats as $id) {
+            if ($id !='') {
+                     $refineCats[] = $id;
+            }
+        }
+    }
+
+    if (!empty($refineCats)) {
+        $catString = implode(',', $refineCats);
+        ?>
+        new PeriodicalExecuter(function(pe) {       if ($('followupemail_rule_tabs_form_section_category_content') != null && $('load_tree_cat') !=null) {
+        if ($('load_tree_cat').getValue() ==0) {
+        
+        <?php
+        foreach ($refineCats as $id) {
+            $cat = Mage::getModel('catalog/category')->load($id);
+           
+        ?>
+        jQuery('#product_categories').val('<?php echo $catString?>');
+        var catName = '<?php echo $cat->getName() ?>';
+        var sel = "span:contains('" + catName + "')";
+        jQuery(sel).parent().prev('input').prop('checked' ,true);
+        console.log(jQuery(sel));
+        console.log(jQuery(sel).parent().prev('input').attr('id'));
+        <?php                                                                                                                                                                                                                           } ?>
+        $('load_tree_cat').setValue(1);
+        }
+        }
+        if ( $('load_tree_cat') !=null && $('load_tree_cat').getValue() == 1)
+        pe.stop();
+        },5);   
+        <?php
+    }
+}
+
+?>
+</script>
+<input type="hidden" id="load_tree_cat" value="0" />

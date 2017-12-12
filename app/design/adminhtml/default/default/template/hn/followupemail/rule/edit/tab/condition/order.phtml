@@ -1,0 +1,166 @@
+<?php
+$condition = false;
+$ruleId = $this->getRequest()->getParam('id') ;
+if ($ruleId) {
+    $ruleBean = Mage::getModel('followupemail/rule')->load($ruleId);
+    $condition = unserialize(base64_decode($ruleBean->getData('conditions_serialized')));
+    //$condition = $ruleBean->getData('conditions_serialized');
+}
+
+function renderSelected($value, $option)
+{
+    if (isset($option) && $option== $value) {
+        $selected = 'selected';
+    } else {
+        $selected ='';
+    }  echo $selected ;
+}
+?>
+<tr class="order_condition">
+    <td class="label"><label for="order_status"><?php echo Mage::helper('followupemail')->__('Order status') ?></label></td>
+    <td class="value"><select id="fue_condition_status" name="condition[status]" onchange="fueControl.setNameForEvent(event)">
+            <option value="cancel" <?php $value='cancel';
+            if ($condition && $condition['status'] == $value) {
+                $selected = 'selected';
+            } else {
+                $selected ='';
+            }  echo $selected ;?> ><?php echo Mage::helper('followupemail')->__('Cancel') ?></option>
+            <option value="complete" <?php $value='complete';
+            if ($condition && $condition['status'] == $value) {
+                $selected = 'selected';
+            } else {
+                $selected ='';
+            }  echo $selected ;?> ><?php echo Mage::helper('followupemail')->__('Complete') ?></option>
+            <option value="closed" <?php $value='closed';
+            if ($condition && $condition['status'] == $value) {
+                $selected = 'selected';
+            } else {
+                $selected ='';
+            }  echo $selected ;?> ><?php echo Mage::helper('followupemail')->__('Closed') ?></option>
+            <option value="suspected fraud" <?php $value='suspected fraud';
+            if ($condition && $condition['status'] == $value) {
+                $selected = 'selected';
+            } else {
+                $selected ='';
+            }  echo $selected ;?> ><?php echo Mage::helper('followupemail')->__('Suspected fraud') ?></option>
+            <option value="holded" <?php $value='holded';
+            if ($condition && $condition['status'] == $value) {
+                $selected = 'selected';
+            } else {
+                $selected ='';
+            }  echo $selected ;?> ><?php echo Mage::helper('followupemail')->__('On hold') ?></option>
+            <option value="payment review" <?php $value='payment review';
+            if ($condition && $condition['status'] == $value) {
+                $selected = 'selected';
+            } else {
+                $selected ='';
+            }  echo $selected ;?> ><?php echo Mage::helper('followupemail')->__('Payment review') ?></option>
+            <option value="pending" <?php $value='pending';
+            if ($condition && $condition['status'] == $value) {
+                $selected = 'selected';
+            } else {
+                $selected ='';
+            }  echo $selected ;?> ><?php echo Mage::helper('followupemail')->__('Pending') ?></option>
+            <option value="pending payment" <?php $value='pending payment';
+            if ($condition && $condition['status'] == $value) {
+                $selected = 'selected';
+            } else {
+                $selected ='';
+            }  echo $selected ;?> ><?php echo Mage::helper('followupemail')->__('Pending payment') ?></option>
+            <option value="pending paypal" <?php $value='pending paypal';
+            if ($condition && $condition['status'] == $value) {
+                $selected = 'selected';
+            } else {
+                $selected ='';
+            }  echo $selected ;?> ><?php echo Mage::helper('followupemail')->__('Pending paypal') ?></option>
+            <option value="processing" <?php $value='processing';
+            if ($condition && $condition['status'] == $value) {
+                $selected = 'selected';
+            } else {
+                $selected ='';
+            }  echo $selected ;?>><?php echo Mage::helper('followupemail')->__('Processing') ?></option>
+    </select></td>
+
+</tr>
+<input id="fue_envent_name" type="hidden" name="event_name" value="<?php if (isset($ruleBean)) {
+    echo $ruleBean->getData('event_name');
+} else {
+    echo Mage::helper('followupemail')->__('Order is cancel') ;
+}?>" />
+<script type="text/javascript">
+
+var fueControl = new fue('fue_event' ,'fue_condition_status','fue_envent_name');
+</script>
+<tr class="order_condition">
+
+    <td class="label"><label for="order_status"><?php echo Mage::helper('followupemail')->__('Grand total') ?></label></td>
+    <td class="value"><select name="condition[grand_total][operation]">
+            <option value="gt" <?php $value = 'gt' ;
+            if (isset($condition['grand_total']['operation'])) {
+                $option = $condition['grand_total']['operation'];
+                renderSelected($value, $option);
+            }?>><?php echo Mage::helper('followupemail')->__('greater than') ?></option>
+            <option value="lt" <?php $value = 'lt' ;
+            if (isset($condition['grand_total']['operation'])) {
+                $option = $condition['grand_total']['operation'];
+                renderSelected($value, $option);
+            }?> ><?php echo Mage::helper('followupemail')->__('less than') ?></option>
+            <option value="eq" <?php $value = 'eq' ;
+            if (isset($condition['grand_total']['operation'])) {
+                $option = $condition['grand_total']['operation'];
+                renderSelected($value, $option);
+            }?> ><?php echo Mage::helper('followupemail')->__('equal') ?></option>
+            <option value="neq" <?php $value = 'neq' ;
+            if (isset($condition['grand_total']['operation'])) {
+                $option = $condition['grand_total']['operation'];
+                renderSelected($value, $option);
+            }?> ><?php echo Mage::helper('followupemail')->__('not equal') ?></option>
+            <option value="gteq" <?php $value = 'gteq' ;
+            if (isset($condition['grand_total']['operation'])) {
+                $option = $condition['grand_total']['operation'];
+                renderSelected($value, $option);
+            }?> ><?php echo Mage::helper('followupemail')->__('greater or equal') ?></option>
+            <option value="lteq" <?php $value = 'lteq' ;
+            if (isset($condition['grand_total']['operation'])) {
+                $option = $condition['grand_total']['operation'];
+                renderSelected($value, $option);
+            }?> ><?php echo Mage::helper('followupemail')->__('less or equal') ?></option>
+    </select></td>
+    <td><input type="text" name="condition[grand_total][value]" <?php if (isset($condition['grand_total']['value'])) :
+?> value= "<?php echo $condition['grand_total']['value'] ?>" <?php
+endif;?>/></td>
+</tr>
+
+
+<?php
+
+$category = new Mage_Adminhtml_Model_System_Config_Source_Category();
+$options = $category->toOptionArray(false);
+$attribute = array (
+        'id' => 'grand_total[exclude_cat]',
+        'name' => 'grand_total[exclude_cat]',
+        'label' => Mage::helper('followupemail')->__('Exclude category'),
+        'title' => Mage::helper('followupemail')->__('Exclude category'),
+        'values' => $options
+);
+$category_field = new Varien_Data_Form_Element_Multiselect($attribute);
+$form = new Varien_Data_Form(array (
+        'id' => 'edit_form',
+        'action' => $this->getUrl('*/*/save', array (
+                'id' => $this->getRequest()->getParam('id')
+        )),
+        'method' => 'post',
+        'enctype' => 'multipart/form-data'
+));
+$category_field->setForm($form);
+//echo $category_field->getElementHtml ();
+?>
+<tr class="order_condition wishlist">
+<td class="label"><label for="order_status"><?php echo Mage::helper('followupemail')->__('Sku') ?></label></td>
+    <td class="value">
+    <input type="text" name="condition[sku]" <?php if (isset($condition['sku'])) :
+?> value= "<?php echo $condition['sku'] ?>" <?php
+endif;?> />
+    </td>
+</tr>
+

@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <HN_Followupemail>
+            <active>true</active>
+            <codePool>community</codePool>
+        </HN_Followupemail>
+    </modules>
+</config>

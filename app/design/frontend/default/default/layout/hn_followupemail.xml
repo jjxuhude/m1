@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<layout version="0.1.0">
+    <fue_order_item>
+        <block type="core/template" template="email/fue/order/item.phtml">
+            
+        </block>
+    </fue_order_item>
+</layout>

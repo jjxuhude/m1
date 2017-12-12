@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<layout>
+
+    <adminhtml_catalog_product_edit>
+        <reference name="head">
+        <action method="addJs">
+            <script>adminhtml/hn/fue/jquery-1.11.1.js</script>
+        </action>
+        <action method="addJs">
+            <script>adminhtml/hn/fue/noConflict.js</script>
+        </action>
+            <action method="addJs">
+            <script>adminhtml/hn/fue/addCheckbox.js</script>
+        </action>
+
+        </reference>
+    </adminhtml_catalog_product_edit>
+	<followupemail_adminhtml_rule_new>
+		<reference name="head">
+			<action method="addJs">
+				<script>adminhtml/hn/fue/jquery-1.11.1.js</script>
+			</action>
+			<action method="addJs">
+				<script>adminhtml/hn/fue/noConflict.js</script>
+			</action>
+			<action method="addJs">
+				<script>adminhtml/hn/fue/chain.js</script>
+			</action>
+			<action method="addJs">
+				<script>adminhtml/hn/fue/fue.js</script>
+			</action>
+		</reference>
+	</followupemail_adminhtml_rule_new>
+	<followupemail_adminhtml_rule_edit>
+		<reference name="head">
+		    <action method="addJs">
+				<script>adminhtml/hn/fue/jquery-1.11.1.js</script>
+			</action>
+			<action method="addJs">
+				<script>adminhtml/hn/fue/noConflict.js</script>
+			</action>
+			<action method="addJs">
+				<script>adminhtml/hn/fue/chain.js</script>
+			</action>
+			<action method="addJs">
+				<script>adminhtml/hn/fue/fue.js</script>
+			</action>
+		</reference>
+	</followupemail_adminhtml_rule_edit>
+</layout>
