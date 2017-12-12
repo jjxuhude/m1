@@ -42,6 +42,11 @@
 					</followupemail>
 				</entities>
 			</followupemail_mysql4>
+			<salesrule_resource>
+				<rewrite>
+					<rule_collection>HN_Followupemail_Model_Resource_Rule_Collection</rule_collection>
+				</rewrite>
+			</salesrule_resource>
 		</models>
 
 		<resources>
